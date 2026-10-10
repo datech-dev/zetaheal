@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Zeta Heal Caregiver",
+    "slug": "zetaheal-parent",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0f766e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zetaheal.caregiver"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e"
+      },
+      "package": "com.zetaheal.caregiver"
+    },
+    "scheme": "zetaheal",
+    "extra": {
+      "eas": {
+        "projectId": "zetaheal-caregiver-demo"
+      }
+    }
+  }
+}
