@@ -1,0 +1,95 @@
+name: CI/CD Pipeline - Zeta Heal Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # 1. CI QUALITY GATES (Lint, Typecheck, Build Packages, Run Tests)
+  # ============================================================================
+  quality-gates:
+    name: Test & Quality Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Monorepo Dependencies
+        run: npm ci
+
+      - name: Build Shared Workspace Packages
+        run: npm run build:packages
+
+      - name: Run Automated Security & Clinical Domain Tests
+        run: npm test
+
+      - name: Run TypeScript Strict Typecheck Across All Workspaces
+        run: npm run typecheck
+
+      - name: Verify Web Production Bundle Build
+        run: npm run build:web
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          NODE_ENV: production
+
+  # ============================================================================
+  # 2. CD AUTOMATED VPS DEPLOYMENT
+  # ============================================================================
+  deploy-vps:
+    name: Automatic Deploy to VPS
+    needs: quality-gates
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            APP_DIR="${{ secrets.VPS_APP_DIR || '/var/www/zetaheal' }}"
+            BRANCH="${{ github.ref_name }}"
+            
+            echo "🚀 Connecting to VPS for deployment..."
+            
+            # Ensure app directory exists
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Cloning repository..."
+              git clone https://github.com/datech-dev/zetaheal.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            
+            # Pull latest changes from git
+            echo "Pulling latest code from branch $BRANCH..."
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            
+            # Run deploy script
+            chmod +x deploy.sh
+            APP_DIR="$APP_DIR" BRANCH="$BRANCH" ./deploy.sh
+            
+            echo "🎉 Zeta Heal production deployment finished successfully!"
