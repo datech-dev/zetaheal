@@ -71,7 +71,13 @@ jobs:
       - name: Prepare APK Output
         run: |
           mkdir -p output
-          find apps/mobile/android/app/build/outputs/apk -name "*.apk" -exec cp {} output/zetaheal-caregiver.apk \;
+          APK_FILE=$(find . -name "*.apk" | head -n 1)
+          echo "Found APK at: $APK_FILE"
+          if [ -z "$APK_FILE" ]; then
+            echo "Error: No APK file found!"
+            exit 1
+          fi
+          cp "$APK_FILE" output/zetaheal-caregiver.apk
           ls -lh output/
 
       - name: Upload APK as Workflow Artifact
