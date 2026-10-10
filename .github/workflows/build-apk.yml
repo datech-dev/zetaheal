@@ -44,11 +44,11 @@ jobs:
         run: |
           npm run build:packages
 
-      - name: Link Root Node Modules into Mobile Workspace
+      - name: Link Root Node Modules to Mobile Workspace
         working-directory: apps/mobile
         run: |
-          mkdir -p node_modules
-          cp -rs ../../node_modules/* node_modules/ 2>/dev/null || true
+          rm -rf node_modules
+          ln -s "$(pwd)/../../node_modules" ./node_modules
 
       - name: Generate Android Native Project via Expo Prebuild
         working-directory: apps/mobile
@@ -62,6 +62,12 @@ jobs:
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs="-Xmx3072m" --stacktrace 2>&1 | tee ../gradle-build.log
 
+      - name: Print Gradle Log Tail on Failure
+        if: failure()
+        run: |
+          echo "=== GRADLE FAILURE LOG TAIL ==="
+          tail -n 120 apps/mobile/gradle-build.log || true
+
       - name: Upload Gradle Build Log
         if: always()
         uses: actions/upload-artifact@v4
@@ -72,7 +78,10 @@ jobs:
       - name: Prepare APK Output
         run: |
           mkdir -p output
-          APK_FILE=$(find . -name "*.apk" | head -n 1)
+          APK_FILE=$(find apps/mobile/android -name "*.apk" | head -n 1)
+          if [ -z "$APK_FILE" ]; then
+            APK_FILE=$(find . -name "*.apk" | head -n 1)
+          fi
           echo "Found APK at: $APK_FILE"
           if [ -z "$APK_FILE" ]; then
             echo "Error: No APK file found!"
