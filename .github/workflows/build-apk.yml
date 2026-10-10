@@ -67,6 +67,13 @@ jobs:
         run: |
           echo "=== GRADLE FAILURE LOG TAIL ==="
           tail -n 120 apps/mobile/gradle-build.log || true
+          mkdir -p ci-logs
+          tail -n 120 apps/mobile/gradle-build.log > ci-logs/gradle-error.txt
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ci-logs/gradle-error.txt
+          git commit -m "ci: capture gradle build error" || true
+          git push origin main || true
 
       - name: Upload Gradle Build Log
         if: always()
