@@ -31,10 +31,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configure Android Environment
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
 
-      - name: Install Dependencies
+      - name: Install Monorepo Dependencies
         run: |
           npm install --legacy-peer-deps
 
@@ -47,14 +49,10 @@ jobs:
         run: |
           npx expo prebuild --platform android --clean --no-install
 
-      - name: Make Gradlew Executable
-        working-directory: apps/mobile/android
-        run: |
-          chmod +x ./gradlew
-
       - name: Build Android Debug APK
         working-directory: apps/mobile/android
         run: |
+          chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
 
       - name: Prepare APK Output
@@ -80,12 +78,6 @@ jobs:
             ### 📱 Zeta Heal Caregiver Companion App (Android APK)
 
             Direct download of the standalone `.apk` package for the Zeta Heal Pediatric OT Caregiver mobile application.
-
-            #### Features:
-            - **Activity Plans**: Detailed clinical instructions, materials, and safety guidelines.
-            - **One-Tap Completion Logging**: Log sessions with qualitative observations.
-            - **Bilingual Interface**: English and Tamil (தமிழ்).
-            - **Idempotency & Caregiver Affirmations**: Positive, non-stigmatizing encouragement.
 
             #### How to Install on Android:
             1. Download `zetaheal-caregiver.apk` below directly onto your Android device.

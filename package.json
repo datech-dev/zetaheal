@@ -9,7 +9,7 @@
   "scripts": {
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:mobile": "npm run start --workspace=apps/mobile",
-    "build:packages": "npm run build --workspaces --if-present",
+    "build:packages": "npm run build --workspace=packages/shared-types --workspace=packages/ui-tokens --workspace=packages/validation",
     "build:web": "npm run build --workspace=apps/web",
     "test": "node --experimental-strip-types --test tests/security-multitenancy.test.mjs tests/clinical-domain.test.mjs",
     "lint": "npm run lint --workspaces --if-present",
