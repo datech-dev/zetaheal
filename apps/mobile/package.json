@@ -5,20 +5,20 @@
   "main": "App.tsx",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "build:apk": "eas build -p android --profile preview"
   },
   "dependencies": {
     "@zetaheal/shared-types": "*",
     "@zetaheal/validation": "*",
-    "expo": "~51.0.0",
+    "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-native": "0.74.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.0",
     "@types/react": "~18.2.79",
     "typescript": "^5.5.4"
   }
