@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/lib/data-store';
-import { Activity } from '@zetaheal/shared-types';
+import type { Activity } from '@zetaheal/shared-types';
 import {
   Compass,
   Search,

@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/lib/data-store';
 import { calculateAge, formatDate } from '@/lib/utils';
-import { Goal, GoalDomain, GoalObservation, HomeProgram } from '@zetaheal/shared-types';
+import type { Goal, GoalDomain, GoalObservation, HomeProgram } from '@zetaheal/shared-types';
 import {
   LineChart,
   Line,
