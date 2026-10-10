@@ -2,7 +2,19 @@
 
 The **Zeta Heal Caregiver** mobile companion (`apps/mobile`) is built with React Native and Expo. It supports multi-language therapy programs (English & Tamil), offline logging, child activity tracking, and non-stigmatizing feedback.
 
-You have three convenient ways to run or install the mobile application:
+## 📥 Direct Download Standalone Android APK (v1.0.0)
+
+You can download and install the mobile app directly on any Android smartphone:
+
+- **Direct APK Download Link**: [Download zetaheal-caregiver.apk](https://github.com/datech-dev/zetaheal/releases/download/caregiver-mobile-v1.0.0/zetaheal-caregiver.apk)
+- **GitHub Release Page**: [Zeta Heal Caregiver Android App v1.0.0](https://github.com/datech-dev/zetaheal/releases/tag/caregiver-mobile-v1.0.0)
+
+### Quick Installation Steps:
+1. Open the download link above on your Android phone.
+2. Tap **Download anyway** (if prompted by Chrome / Android browser).
+3. Once downloaded, tap the file in your notification bar or **Downloads** folder.
+4. Tap **Install** (if prompted, enable *"Install unknown apps"* for your browser).
+5. Open **Zeta Heal Caregiver** from your home screen!
 
 ---
 
