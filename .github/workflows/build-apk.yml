@@ -31,10 +31,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Configure Android SDK Environment
+      - name: Configure Android SDK and Node Environment
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "NODE_PATH=$GITHUB_WORKSPACE/node_modules:$GITHUB_WORKSPACE/apps/mobile/node_modules" >> $GITHUB_ENV
 
       - name: Install Monorepo Dependencies
         run: |
@@ -44,16 +45,19 @@ jobs:
         run: |
           npm run build:packages
 
-      - name: Link Root Node Modules to Mobile Workspace
-        working-directory: apps/mobile
+      - name: Ensure Node Modules Symlinks for Expo Prebuild
         run: |
-          rm -rf node_modules
-          ln -s "$(pwd)/../../node_modules" ./node_modules
+          ln -sfn "$GITHUB_WORKSPACE/node_modules" "$GITHUB_WORKSPACE/apps/mobile/node_modules"
 
       - name: Generate Android Native Project via Expo Prebuild
         working-directory: apps/mobile
         run: |
           npx expo prebuild --platform android --clean --no-install
+
+      - name: Ensure Node Modules Symlinks for Android Gradle Build
+        run: |
+          ln -sfn "$GITHUB_WORKSPACE/node_modules" "$GITHUB_WORKSPACE/apps/mobile/node_modules"
+          ln -sfn "$GITHUB_WORKSPACE/node_modules" "$GITHUB_WORKSPACE/apps/mobile/android/node_modules"
 
       - name: Build Android Debug APK
         working-directory: apps/mobile/android
